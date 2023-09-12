@@ -1,0 +1,5 @@
+- name: "user del"
+  hosts: webserver1
+  tasks:
+    - name: del userali
+      user: name="ali" state="absent" remove=yes

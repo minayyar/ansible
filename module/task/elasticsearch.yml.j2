@@ -1,0 +1,38 @@
+# elasticsearch.yml.j2
+cluster.name: your_cluster_name
+node.name: "{{ inventory_hostname }}"
+path.data: /var/lib/elasticsearch
+path.logs: /var/log/elasticsearch
+network.host: 0.0.0.0
+http.port: 9200
+
+# Optional: Enable authentication and authorization
+# xpack.security.enabled: true
+# xpack.security.authc.api_key.enabled: true
+# xpack.security.authc.basic.enabled: true
+
+# Optional: Set up the discovery mechanism for Elasticsearch
+# discovery.seed_hosts: ["es-node-1", "es-node-2"]
+# cluster.initial_master_nodes: ["es-node-1"]
+
+# Optional: Configure Elasticsearch roles and users
+# xpack.security.authc.realms:
+#   native:
+#     native1:
+#       order: 0
+
+# Optional: Configure additional Elasticsearch settings
+# ...
+
+# Optional: Set up Elasticsearch monitoring
+# xpack.monitoring.enabled: true
+# xpack.monitoring.elasticsearch.collection.enabled: true
+# xpack.monitoring.collection.cluster.stats.timeout: 10s
+# ...
+
+# Optional: Define custom index templates
+# index.codec: best_compression
+# index.number_of_shards: 1
+# index.number_of_replicas: 1
+# ...
+

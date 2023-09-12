@@ -1,0 +1,12 @@
+groups:
+  - name: MissingLogLineAlerts
+    rules:
+      - alert: MissingLogLineAlert
+        expr: count_over_time(my_metric{job="filebeat"}[5m]) < 1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Log line missing in Filebeat"
+          description: "The log line is missing in the Filebeat log data source for 5 minutes."
+

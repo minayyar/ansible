@@ -1,0 +1,7 @@
+-
+  name: "copy file"
+  hosts: webserver1
+  tasks:
+    -
+      name: copy
+      copy: src=/root/docker-compose.yml dest=/root/ owner=majid group=majid mode=0755

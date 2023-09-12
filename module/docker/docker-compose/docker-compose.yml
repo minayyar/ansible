@@ -1,0 +1,73 @@
+version: '3.7'
+
+services:
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.9.1
+    user: root
+    container_name: filebeat
+    restart: always
+    volumes:
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - /var/log/nginx:/var/log/nginx
+        #  command: filebeat -e -c/usr/share/filebeat/filebeat.yml
+    command: ["filebeat", "-e", "-strict.perms=false"]
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=iammajid
+    networks:
+      - logging
+    depends_on:
+      - elasticsearch
+
+  elasticsearch:
+    image: elasticsearch:8.9.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms750m -Xmx750m
+      - xpack.security.enabled=false
+      - ELASTIC_PASSWORD=iammajid
+    ports:
+      - "9200:9200"
+    restart: always
+    networks:
+      - logging
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./alerts.yml:/etc/prometheus/alerts.yml
+    ports:
+      - "9090:9090"
+    restart: always
+    networks:
+      - logging
+
+  alertmanager:
+    image: prom/alertmanager
+    container_name: alertmanager
+    volumes:
+      - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    ports:
+      - "9093:9093"
+    restart: always
+    networks:
+      - logging
+  elasticsearch_exporter:
+    image: justwatch/elasticsearch_exporter
+    container_name: elasticsearch_exporter
+    restart: always
+    command:
+      - "--es.uri=http://elasticsearch:9200"
+    ports:
+      - "9114:9114"
+    networks:
+      - logging
+
+networks:
+  logging:
+    driver: bridge
+

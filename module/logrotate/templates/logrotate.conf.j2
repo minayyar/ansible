@@ -1,0 +1,31 @@
+{{ nginx_log_path }}/access.log {
+    weekly
+    missingok
+    rotate 52
+    compress
+    delaycompress
+    notifempty
+    create 0640 www-data adm
+    sharedscripts
+    postrotate
+        if [ -f {{ nginx_pid_file }} ]; then
+            /bin/kill -USR1 `cat {{ nginx_pid_file }}`
+        fi
+    endscript
+}
+
+{{ nginx_log_path }}/error.log {
+    weekly
+    missingok
+    rotate 52
+    compress
+    delaycompress
+    notifempty
+    create 0640 www-data adm
+    sharedscripts
+    postrotate
+        if [ -f {{ nginx_pid_file }} ]; then
+            /bin/kill -USR1 `cat {{ nginx_pid_file }}`
+        fi
+    endscript
+}

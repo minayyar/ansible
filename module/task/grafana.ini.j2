@@ -1,0 +1,110 @@
+# grafana.ini.j2
+[server]
+http_addr = 0.0.0.0
+http_port = 3000
+
+# Database Configuration
+[database]
+# The type of database to use (mysql, sqlite, postgres, etc.)
+type = sqlite3
+path = /var/lib/grafana/grafana.db
+
+# Optional: Enable secure cookies for session management
+# cookie_secure = true
+
+# Optional: Set root_url to the path Grafana is accessible from
+# root_url = %(protocol)s://%(domain)s:%(http_port)s/
+
+# Optional: Enable SSL/TLS
+# protocol = https
+# https_cert_file = /etc/grafana/ssl/cert.pem
+# https_key_file = /etc/grafana/ssl/key.pem
+
+# Optional: Set admin password
+# admin_password = your_admin_password
+
+# Optional: Configure SMTP email notifications
+# [smtp]
+# enabled = true
+# host = smtp.example.com:25
+# user = your_email@example.com
+# password = your_email_password
+# from_address = grafana@example.com
+
+# Optional: Additional Grafana configuration options
+# ...
+
+# Optional: Configure anonymous access
+# [auth.anonymous]
+# enabled = true
+# org_name = Main Org.
+
+# Optional: Set session timeout
+# [auth]
+# cookie_name = grafana_sess
+# login_remember_days = 7
+# session_life_time = 86400
+
+# Optional: Configure LDAP authentication
+# [auth.ldap]
+# enabled = true
+# config_file = /etc/grafana/ldap.toml
+
+# Optional: Configure OAuth authentication
+# [auth.generic_oauth]
+# enabled = true
+# name = OAuth Provider
+# client_id = your_oauth_client_id
+# client_secret = your_oauth_client_secret
+# scopes = openid profile email
+# auth_url = https://oauth.example.com/auth
+# token_url = https://oauth.example.com/token
+# allowed_domains = example.com
+
+# Optional: Configure basic authentication
+# [auth.basic]
+# enabled = true
+
+# Optional: Additional security settings
+# [security]
+# admin_user = your_admin_username
+# disable_gravatar = false
+# allow_embedding = false
+
+# Optional: Additional Grafana server settings
+# [server]
+# domain = example.com
+# enforce_domain = true
+
+# Optional: Logging settings
+# [log]
+# mode = file
+# level = info
+# filters = rendering:debug
+
+# Optional: Additional settings for rendering
+# [rendering]
+# server_url = https://your-rendering-server.com/render
+# callback_url = https://your-callback-server.com/callback
+
+# Optional: Additional settings for alerting
+ #[alerting]
+# execute_alerts = true
+ [alerts]
+  enable = true
+# Optional: Configure data sources
+# [datasources]
+# datasources = /etc/grafana/provisioning/datasources/
+
+# Optional: Configure dashboards
+# [dashboards]
+# dashboards = /etc/grafana/provisioning/dashboards/
+
+# Optional: Additional provisioning settings
+# [provisioning]
+# provisioning = /etc/grafana/provisioning/
+
+# Optional: Configure LDAP sync settings
+# [auth.ldap]
+# sync_ttl = 60
+

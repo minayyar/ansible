@@ -1,0 +1,8 @@
+-
+  name: my first play book
+  hosts: webserver1
+  tasks:
+    -
+      name: "create a folder"
+      command: userdel ali
+

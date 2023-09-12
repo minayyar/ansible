@@ -1,0 +1,36 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ['alertname', 'severity']
+  group_wait: 10s
+  group_interval: 5m
+  repeat_interval: 12h
+
+receivers:
+  - name: 'email-notifier'
+#    email_configs:
+#      - to: 'your-email@example.com' # Replace with your email address
+#        send_resolved: true
+#        smarthost: smtp.example.com:25 # Replace with your SMTP server and port
+#        require_tls: false
+#        auth_username: 'your-smtp-username' # Optional, if SMTP requires authentication
+#        auth_password: 'your-smtp-password' # Optional, if SMTP requires authentication
+#
+#route:
+#  routes:
+#    - receiver: 'email-notifier'
+#      group_wait: 30s
+#      match_re:
+#        severity: 'critical|warning' # Customize based on your alert labels
+#      continue: true
+#
+#inhibit_rules:
+#  - source_match:
+#      severity: 'critical'
+#    target_match:
+#      severity: 'warning'
+#    equal: ['alertname', 'dev']
+#
+#  # Add more inhibit rules if needed
+#

@@ -1,0 +1,1 @@
+task ansible_host=192.168.1.37 ansible_ssh_pass=1 ansible_connection=ssh ansible_port=22 ansible_ssh_user=root

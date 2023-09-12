@@ -1,0 +1,8 @@
+-
+  name: "fileinline"
+  hosts: webserver1
+  tasks:
+    -
+      name: chnage in majid
+      lineinfile: path=/root/majid line="i am ansible"
+

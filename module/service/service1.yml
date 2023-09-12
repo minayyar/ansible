@@ -1,0 +1,8 @@
+-
+  name: "this is for starting and stoping service"
+  hosts: webserver1
+  tasks:
+    -
+      name: apache2
+      state: started #stopped
+

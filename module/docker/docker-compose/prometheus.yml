@@ -1,0 +1,16 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'elasticsearch'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['192.168.1.41:9114']
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ['192.168.1.41:9093']
+
+rule_files:
+    - 'alerts.yml' 

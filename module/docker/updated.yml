@@ -1,0 +1,81 @@
+- name: Install Docker on Ubuntu
+  hosts: task
+  become: yes
+  tasks:
+    - name: Copy Docker Compose file to the target host
+      copy:
+        src: docker-compose
+        dest: /root
+
+    - name: Update APT Cache
+      apt:
+        update_cache: yes
+
+    - name: Fix Broken Package Dependencies
+      apt:
+        name: '*'
+        state: present
+        force_apt_get: yes
+      when: ansible_distribution == 'Ubuntu'  # Apply only on Ubuntu
+
+    - name: Upgrade System
+      apt:
+        upgrade: yes
+
+    - name: Remove Existing Docker Packages
+      apt:
+        name: docker-ce, docker-ce-cli, containerd.io, runc
+        state: absent
+        autoremove: yes
+        purge: yes
+      ignore_errors: yes  # Ignore errors if packages are not present
+
+
+
+    - name: Install Prerequisites
+      apt:
+        name: apt-transport-https, ca-certificates, curl, software-properties-common
+        state: present
+
+        #    - name: Add Docker Repository
+        #      shell: |
+        #        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+        #        echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+        #      register: docker_repo
+        #      changed_when: false  # The shell task always reports changed status
+    - name: docker-ce-cli
+      apt:
+        name: docker-ce-cli
+        state: present
+    - name: containerd.io
+      apt:
+        name: containerd.io
+        state: present
+    - name: runc
+      apt:
+        name: runc
+        state: present
+    - name: Install libc6
+      apt:
+        name: libc6
+        state: present
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+      notify: Restart Docker Service
+    - name: Install Docker-compose
+      apt:
+        name: docker-compose
+        state: present
+    - name: Start the Docker Compose stack
+      command: docker-compose up -d
+      args:
+        chdir: /root/docker-compose
+  handlers:
+    - name: Restart Docker Service
+      service:
+        name: docker
+        state: restarted
+
+

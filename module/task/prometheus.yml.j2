@@ -1,0 +1,26 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'filebeat'
+    static_configs:
+      - targets: ['192.168.1.22:5066']
+
+ rule_files:
+   - 'alert.rules.yml'
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ['192.168.1.22:9093']
+groups:
+  - name: MissingLogLineAlerts
+    rules:
+      - alert: MissingLogLineAlert
+        expr: count_over_time(your_log_metric{job="filebeat"}[5m]) < 1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Log line missing in Filebeat"
+          description: "The log line is missing in the Filebeat log data source for 5 minutes."

@@ -1,0 +1,32 @@
+- name: Install Logrotate for Application with Monitoring and Elasticsearch
+  hosts: webserver1
+  become: yes  # This allows you to run tasks as a superuser (e.g., root)
+
+  tasks:
+    - name: Install Logrotate
+      apt:
+        name: logrotate  # or yum on CentOS/RedHat systems
+        state: present  # Ensure that logrotate is installed
+      become: yes
+
+    - name: Configure Logrotate for Your Application Logs
+      template:
+        src: logrotate.conf.j2  # Your logrotate configuration template
+        dest: /etc/logrotate.d/nginx  # Destination for logrotate configuration
+      become: yes
+
+    - name: Restart Elasticsearch
+      systemd:
+        name: elasticsearch
+        state: restarted
+      become: yes
+
+    # Add tasks to configure your monitoring and alerting stack here
+    # You might need to install and configure tools like Prometheus, Grafana, or others
+
+  handlers:
+    - name: Reload Logrotate After Configuration Changes
+      systemd:
+        name: logrotate
+        state: restarted
+      become: yes

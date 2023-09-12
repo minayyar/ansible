@@ -1,0 +1,136 @@
+---
+- name: Deploy ELK Stack with Prometheus and Grafana
+  hosts: all
+  become: yes
+  vars:
+    elasticsearch_cluster_name: leet-task
+    elasticsearch_host: 192.168.1.22
+    elasticsearch_username: majid
+    elasticsearch_password: iammajid
+    prometheus_host: 192.168.1.22
+    grafana_host: 192.168.1.22
+    #    smtp_host: smtp.example.com
+    #    smtp_user: your_email@example.com
+    #    smtp_password: your_email_password
+
+  tasks:
+    - name: Add Elastic APT repository key
+      apt_key:
+        url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+      when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+    - name: install filebeat
+      apt_repository:
+        repo: 'deb https://artifacts.elastic.co/packages/7.x/apt stable main'
+        state: present
+        filename: elastic-7.x
+        update_cache: yes
+      when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+
+    - name: Install necessary packages (for Ubuntu/Debian)
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - apt-transport-https
+        - software-properties-common
+      when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+    - name: Create Filebeat configuration directory
+      file:
+        path: /etc/filebeat
+        state: directory
+
+    - name: Copy Filebeat configuration file
+      template:
+        src: filebeat.yml.j2
+        dest: /etc/filebeat/filebeat.yml
+      notify: restart filebeat
+
+    - name: Install and Configure Elasticsearch
+      apt:
+        name: elasticsearch
+        state: present
+      become: yes
+
+    - name: Copy Elasticsearch configuration file
+      template:
+        src: elasticsearch.yml.j2
+        dest: /etc/elasticsearch/elasticsearch.yml
+      notify: restart elasticsearch
+
+    - name: Install and Configure Prometheus
+      apt:
+        name: prometheus
+        state: present
+      become: yes
+
+    - name: Copy Prometheus configuration file
+      template:
+        src: prometheus.yml.j2
+        dest: /etc/prometheus/prometheus.yml
+      notify: restart prometheus
+    - name: Import Grafana GPG key
+      apt_key:
+        url: https://packages.grafana.com/gpg.key
+    - name: Add Grafana APT repository
+      apt_repository:
+        repo: deb https://packages.grafana.com/oss/deb stable main
+        state: present
+
+    - name: Install and Configure Grafana
+      apt:
+        name: grafana
+        state: present
+      become: yes
+
+    - name: Copy Grafana configuration file
+      template:
+        src: grafana.ini.j2
+        dest: /etc/grafana/grafana.ini
+      notify: restart grafana-server
+
+      #    - name: Import Alertmanager GPG key
+      #      apt_key:
+      #        url: https://packages.grafana.com/gpg.key
+      #    - name: Add Alertmanager APT repository
+      #      apt_repository:
+      #        repo: deb https://packages.grafana.com/oss/prometheus/deb stable main
+      #        state: present
+
+    - name: Install and Configure Alertmanager (part of Prometheus)
+      apt:
+        name: prometheus-alertmanager
+        state: present
+      become: yes
+
+    - name: Copy Alertmanager configuration file
+      template:
+        src: alertmanager.yml.j2
+        dest: /etc/prometheus/alertmanager.yml
+      notify: restart prometheus-alertmanager
+
+  handlers:
+    - name: restart filebeat
+      service:
+        name: filebeat
+        state: restarted
+
+    - name: restart elasticsearch
+      service:
+        name: elasticsearch
+        state: restarted
+
+    - name: restart prometheus
+      service:
+        name: prometheus
+        state: restarted
+
+    - name: restart grafana
+      service:
+        name: grafana-server
+        state: restarted
+
+    - name: restart alertmanager
+      service:
+        name: prometheus-alertmanager
+        state: restarted
+

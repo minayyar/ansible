@@ -1,0 +1,9 @@
+- name: Ansible Playbook to Install and Setup Apache on Ubuntu
+  hosts: webserver1
+  vars:
+    service: apache2
+  tasks:
+    - name: remove latest version of Apache
+      apt: name={{ service }} update_cache=yes state=absent
+    - name: Remove unwanted Apache2 packages from the system
+      apt: autoremove=yes purge=yes 

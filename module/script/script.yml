@@ -1,0 +1,7 @@
+-
+  name: "fileinline"
+  hosts: webserver1
+  tasks:
+    -
+      name: run script
+      script: script.sh Majid removes=/root/alina chdir=/home

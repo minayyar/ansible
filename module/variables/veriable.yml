@@ -1,0 +1,10 @@
+- name: variable
+  hosts: webserver1
+  vars:
+    service: apache2
+  tasks:
+    - name: remove  apache2
+      apt: name={{ service }} update_cache=yes state=absent
+    - name: packes
+      apt: name={{ service }} autoremove=yes purge=yes
+    

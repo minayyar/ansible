@@ -1,0 +1,28 @@
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /var/log/nginx/*.log
+  fields:
+    log_type: nginx_access # Optional field to identify the log type
+
+output.elasticsearch:
+  hosts: ["192.168.1.22:9200"]
+  index: "nginx-%{+yyyy.MM.dd}" # Optional index pattern for Nginx logs
+  username: "majid" # Optional Elasticsearch username
+  password: "iammajid" # Optional Elasticsearch password
+
+# Optional: Configure Filebeat to use Elasticsearch output for index management
+setup.ilm.enabled: false
+
+# Optional: Configure Filebeat to use Elasticsearch index template
+setup.template.enabled: true
+setup.template.name: "nginx"
+setup.template.pattern: "nginx-*"
+setup.template.settings:
+  index.number_of_shards: 1
+  index.number_of_replicas: 0
+
+# Optional: Configure Filebeat to use Kibana for index pattern management
+#setup.kibana:
+#  host: "your-kibana-host:5601"
